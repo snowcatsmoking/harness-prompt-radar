@@ -9,25 +9,37 @@
 <body>
 <header>
   <h1 id="title">Harness</h1>
-  <p><a href="index.html">&larr; 返回首页</a></p>
+  <nav class="site-nav">
+    <a href="index.html">全部 Harness</a>
+  </nav>
 </header>
 <main>
-  <div class="card">
-    <h3 style="margin-top:0">版本历史</h3>
+  <section>
+    <h2 class="section-title">版本历史</h2>
     <ul class="version-list" id="version-list"></ul>
-  </div>
+  </section>
 
-  <div class="card">
-    <h3 style="margin-top:0">版本对比</h3>
+  <section>
+    <h2 class="section-title">版本对比</h2>
     <div class="diff-controls">
       <label>从 <select id="from-select"></select></label>
       <label>到 <select id="to-select"></select></label>
     </div>
     <div id="diff-container"></div>
-  </div>
+  </section>
 </main>
+<footer>
+  <a href="index.html">&larr; 返回首页</a>
+</footer>
 <script src="diff.js"></script>
 <script>
+const HARNESS_LABEL = {
+  "claude-code": "Claude Code",
+  "codex-cli": "Codex CLI",
+  "kimi-code": "Kimi Code CLI",
+  "opencode": "OpenCode",
+};
+
 function harnessFromQuery() {
   const params = new URLSearchParams(location.search);
   return params.get('h') || '';
@@ -35,8 +47,9 @@ function harnessFromQuery() {
 
 async function main() {
   const harness = harnessFromQuery();
-  document.getElementById('title').textContent = harness;
-  document.title = harness + ' — harness-prompt-radar';
+  const label = HARNESS_LABEL[harness] || harness;
+  document.getElementById('title').textContent = label;
+  document.title = label + ' — harness-prompt-radar';
 
   const records = await (await fetch(`../data/${harness}.json`)).json();
   if (!records.length) {
@@ -47,11 +60,10 @@ async function main() {
   const versionListEl = document.getElementById('version-list');
   for (const r of [...records].reverse()) {
     const li = document.createElement('li');
-    const badgeClass = r.extraction_confidence === 'high' ? 'badge-high' : 'badge-low';
     li.innerHTML = `
-      <span>v${r.version} <span class="harness-meta">${r.extracted_at}</span></span>
+      <span>v${r.version} <span style="color:var(--text-dim)">${r.extracted_at}</span></span>
       <span>${r.system_prompt_token_count.toLocaleString()} tokens
-        <span class="badge ${badgeClass}">${r.extraction_confidence === 'high' ? '高置信度' : '低置信度'}</span>
+        <span class="tag ${r.extraction_confidence === 'high' ? 'tag-high' : 'tag-low'}">${r.extraction_confidence === 'high' ? '高' : '低'}</span>
       </span>
     `;
     versionListEl.appendChild(li);
@@ -80,7 +92,7 @@ async function main() {
     container.innerHTML = '';
     if (!fromRecord || !toRecord) return;
     if (fromRecord.version === toRecord.version) {
-      container.innerHTML = '<p class="harness-meta">选择两个不同版本以查看 diff。</p>';
+      container.innerHTML = '<p style="color:var(--text-dim); font-size:0.88rem">选择两个不同版本以查看 diff。</p>';
       return;
     }
     container.appendChild(renderDiff(fromRecord.system_prompt, toRecord.system_prompt));

@@ -9,51 +9,99 @@
 <body>
 <header>
   <h1>harness-prompt-radar</h1>
-  <p>持续追踪主流 AI Agent Harness 的 system prompt,记录版本演变。数据项目,不做解读。</p>
-  <p><a href="compare.html">四家横向对比 &rarr;</a></p>
+  <p>持续追踪主流 AI Agent Harness(Claude Code、Codex CLI、Kimi Code CLI、OpenCode)的 system prompt,记录版本演变。</p>
+  <p>数据项目,不做解读——每个 harness 当前版本的完整 system prompt 原文见下。</p>
+  <nav class="site-nav">
+    <a href="#prompts">全文</a>
+    <a href="#summary">概览</a>
+  </nav>
 </header>
 <main>
-  <div id="harness-list"></div>
+
+  <section id="prompts">
+    <h2 class="section-title">当前版本 System Prompt 全文</h2>
+    <p class="section-note">按版本抓取时间排序。每个 harness 的历史版本与 diff 见对应详情页。</p>
+    <div id="prompt-list"></div>
+  </section>
+
+  <section id="summary">
+    <h2 class="section-title">概览</h2>
+    <table class="harness-table" id="summary-table">
+      <thead>
+        <tr><th>Harness</th><th>版本</th><th>历史记录数</th><th>Token 数</th><th>提取置信度</th></tr>
+      </thead>
+      <tbody id="summary-body"></tbody>
+    </table>
+  </section>
+
 </main>
 <footer>
   数据来源见各 harness 详情页。<a href="https://github.com/snowcatsmoking/harness-prompt-radar">GitHub</a>
 </footer>
 <script>
+const HARNESS_LABEL = {
+  "claude-code": "Claude Code",
+  "codex-cli": "Codex CLI",
+  "kimi-code": "Kimi Code CLI",
+  "opencode": "OpenCode",
+};
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 async function main() {
   const manifest = await (await fetch('../data/manifest.json')).json();
   const status = await (await fetch('../data/status.json')).json().catch(() => ({}));
-  const list = document.getElementById('harness-list');
-
   const maxTokens = Math.max(...manifest.map(m => m.latest_token_count), 1);
 
+  // full prompt texts
+  const promptList = document.getElementById('prompt-list');
   for (const m of manifest) {
-    const st = status[m.harness];
-    const card = document.createElement('div');
-    card.className = 'card';
+    const records = await (await fetch(`../data/${m.harness}.json`)).json();
+    const latest = records[records.length - 1];
+    const label = HARNESS_LABEL[m.harness] || m.harness;
 
-    const badgeClass = m.latest_confidence === 'high' ? 'badge-high' : 'badge-low';
-    const failBadge = st && st.ok === false ? '<span class="badge badge-fail">抓取失败</span>' : '';
-    const pct = Math.round((m.latest_token_count / maxTokens) * 100);
-
-    card.innerHTML = `
-      <div class="harness-row">
-        <div>
-          <div class="harness-name"><a href="detail.html?h=${m.harness}">${m.harness}</a></div>
-          <div class="harness-meta">v${m.latest_version} · ${m.version_count} 个历史版本</div>
-        </div>
-        <div style="text-align:right">
-          <div>${m.latest_token_count.toLocaleString()} tokens</div>
-          <span class="badge ${badgeClass}">${m.latest_confidence === 'high' ? '高置信度' : '低置信度'}</span>
-          ${failBadge}
-        </div>
+    const block = document.createElement('article');
+    block.className = 'prompt-block';
+    block.id = m.harness;
+    block.innerHTML = `
+      <div class="prompt-block-header">
+        <h3>${label}</h3>
+        <span class="prompt-block-meta">
+          v${latest.version} · ${latest.system_prompt_token_count.toLocaleString()} tokens ·
+          <span class="tag ${latest.extraction_confidence === 'high' ? 'tag-high' : 'tag-low'}">${latest.extraction_confidence === 'high' ? '高置信度' : '低置信度'}</span> ·
+          <a href="${latest.source_url}">来源</a> ·
+          <a href="detail.html?h=${m.harness}">版本历史</a>
+        </span>
       </div>
-      <div class="token-bar-track"><div class="token-bar-fill" style="width:${pct}%"></div></div>
+      <div class="prompt-text"></div>
     `;
-    list.appendChild(card);
+    block.querySelector('.prompt-text').textContent = latest.system_prompt;
+    promptList.appendChild(block);
   }
 
-  if (manifest.length === 0) {
-    list.innerHTML = '<p>暂无数据。</p>';
+  // summary table
+  const body = document.getElementById('summary-body');
+  for (const m of manifest) {
+    const st = status[m.harness];
+    const label = HARNESS_LABEL[m.harness] || m.harness;
+    const pct = Math.round((m.latest_token_count / maxTokens) * 100);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><a class="harness-link" href="#${m.harness}">${label}</a></td>
+      <td>v${m.latest_version}</td>
+      <td>${m.version_count}</td>
+      <td>
+        ${m.latest_token_count.toLocaleString()}
+        <div class="token-bar-track"><div class="token-bar-fill" style="width:${pct}%"></div></div>
+      </td>
+      <td>
+        <span class="tag ${m.latest_confidence === 'high' ? 'tag-high' : 'tag-low'}">${m.latest_confidence === 'high' ? '高' : '低'}</span>
+        ${st && st.ok === false ? '<span class="tag tag-fail">抓取失败</span>' : ''}
+      </td>
+    `;
+    body.appendChild(tr);
   }
 }
 main();
