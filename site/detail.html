@@ -62,9 +62,7 @@ async function main() {
     const li = document.createElement('li');
     li.innerHTML = `
       <span>v${r.version} <span style="color:var(--text-dim)">${r.extracted_at}</span></span>
-      <span>${r.system_prompt_token_count.toLocaleString()} tokens
-        <span class="tag ${r.extraction_confidence === 'high' ? 'tag-high' : 'tag-low'}">${r.extraction_confidence === 'high' ? '高' : '低'}</span>
-      </span>
+      <span>${r.system_prompt_token_count.toLocaleString()} tokens</span>
     `;
     versionListEl.appendChild(li);
   }

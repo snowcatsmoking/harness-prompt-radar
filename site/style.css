@@ -130,8 +130,6 @@ table.harness-table tr:last-child td { border-bottom: none; }
   color: var(--text-dim);
 }
 
-.tag-high { border-color: #3a5a3a; color: #3a5a3a; }
-.tag-low { border-color: #8a6a1f; color: #8a6a1f; }
 .tag-fail { border-color: var(--accent); color: var(--accent); }
 
 /* prompt display — the main content */
@@ -166,17 +164,109 @@ table.harness-table tr:last-child td { border-bottom: none; }
 .prompt-block-meta a { color: var(--text-dim); }
 
 .prompt-text {
-  font-family: var(--mono);
-  font-size: 0.82rem;
+  font-family: var(--sans);
+  font-size: 0.9rem;
   line-height: 1.65;
-  white-space: pre-wrap;
-  word-break: break-word;
-  padding: 1rem 1.2rem;
-  max-height: 560px;
+  padding: 1.2rem 1.4rem;
+  max-height: 640px;
   overflow-y: auto;
 }
 
 .prompt-text::selection { background: #d8c9a0; }
+
+.prompt-text p {
+  margin: 0 0 0.9rem;
+  white-space: pre-wrap;
+}
+
+.prompt-text p:last-child { margin-bottom: 0; }
+
+.prompt-heading {
+  font-family: var(--serif);
+  font-weight: 400;
+  margin: 1.4rem 0 0.5rem;
+  color: var(--text);
+}
+
+.prompt-heading:first-child { margin-top: 0; }
+
+.prompt-heading-1 { font-size: 1.05rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+.prompt-heading-2 { font-size: 0.98rem; }
+.prompt-heading-3 { font-size: 0.92rem; color: var(--text-dim); font-style: italic; }
+
+.prompt-text ul {
+  margin: 0 0 0.9rem;
+  padding-left: 1.3rem;
+}
+
+.prompt-text li {
+  margin-bottom: 0.35rem;
+}
+
+.prompt-text ul ul {
+  margin-top: 0.35rem;
+  margin-bottom: 0;
+}
+
+.prompt-text code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  background: var(--bg-alt);
+  padding: 0.05em 0.3em;
+  border: 1px solid var(--border);
+}
+
+.prompt-text pre {
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  padding: 0.8rem 1rem;
+  overflow-x: auto;
+  margin: 0 0 0.9rem;
+}
+
+.prompt-text pre code {
+  border: none;
+  padding: 0;
+  background: none;
+  font-size: 0.8rem;
+}
+
+.prompt-toc {
+  font-size: 0.82rem;
+  padding: 0.9rem 1.2rem;
+  background: var(--bg-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+.prompt-toc-title {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  margin: 0 0 0.5rem;
+}
+
+.prompt-toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 1.5rem;
+}
+
+.prompt-toc li {
+  break-inside: avoid;
+  margin-bottom: 0.25rem;
+}
+
+.prompt-toc a {
+  color: var(--text);
+  border-bottom: none;
+}
+
+.prompt-toc a:hover { color: var(--accent); }
+
+.prompt-toc .toc-level-2 { padding-left: 1rem; color: var(--text-dim); }
 
 /* detail page version list + diff */
 ul.version-list {

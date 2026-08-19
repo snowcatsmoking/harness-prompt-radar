@@ -28,7 +28,7 @@
     <h2 class="section-title">概览</h2>
     <table class="harness-table" id="summary-table">
       <thead>
-        <tr><th>Harness</th><th>版本</th><th>历史记录数</th><th>Token 数</th><th>提取置信度</th></tr>
+        <tr><th>Harness</th><th>版本</th><th>历史记录数</th><th>Token 数</th></tr>
       </thead>
       <tbody id="summary-body"></tbody>
     </table>
@@ -38,6 +38,7 @@
 <footer>
   数据来源见各 harness 详情页。<a href="https://github.com/snowcatsmoking/harness-prompt-radar">GitHub</a>
 </footer>
+<script src="markdown.js"></script>
 <script>
 const HARNESS_LABEL = {
   "claude-code": "Claude Code",
@@ -45,10 +46,6 @@ const HARNESS_LABEL = {
   "kimi-code": "Kimi Code CLI",
   "opencode": "OpenCode",
 };
-
-function escapeHtml(s) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
 
 async function main() {
   const manifest = await (await fetch('../data/manifest.json')).json();
@@ -70,14 +67,35 @@ async function main() {
         <h3>${label}</h3>
         <span class="prompt-block-meta">
           v${latest.version} · ${latest.system_prompt_token_count.toLocaleString()} tokens ·
-          <span class="tag ${latest.extraction_confidence === 'high' ? 'tag-high' : 'tag-low'}">${latest.extraction_confidence === 'high' ? '高置信度' : '低置信度'}</span> ·
           <a href="${latest.source_url}">来源</a> ·
           <a href="detail.html?h=${m.harness}">版本历史</a>
         </span>
       </div>
+      <div class="prompt-toc" style="display:none">
+        <p class="prompt-toc-title">目录</p>
+        <ul></ul>
+      </div>
       <div class="prompt-text"></div>
     `;
-    block.querySelector('.prompt-text').textContent = latest.system_prompt;
+
+    const textEl = block.querySelector('.prompt-text');
+    const headers = renderMarkdown(latest.system_prompt, textEl);
+
+    if (headers.length >= 2) {
+      const tocEl = block.querySelector('.prompt-toc');
+      const tocList = tocEl.querySelector('ul');
+      for (const h of headers) {
+        const li = document.createElement('li');
+        if (h.level >= 2) li.className = 'toc-level-2';
+        const a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.text;
+        li.appendChild(a);
+        tocList.appendChild(li);
+      }
+      tocEl.style.display = '';
+    }
+
     promptList.appendChild(block);
   }
 
@@ -95,9 +113,6 @@ async function main() {
       <td>
         ${m.latest_token_count.toLocaleString()}
         <div class="token-bar-track"><div class="token-bar-fill" style="width:${pct}%"></div></div>
-      </td>
-      <td>
-        <span class="tag ${m.latest_confidence === 'high' ? 'tag-high' : 'tag-low'}">${m.latest_confidence === 'high' ? '高' : '低'}</span>
         ${st && st.ok === false ? '<span class="tag tag-fail">抓取失败</span>' : ''}
       </td>
     `;
