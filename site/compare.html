@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>横向对比 — harness-prompt-radar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<style>
+.dim-card { margin-bottom: 1.5rem; }
+.dim-title { margin: 0 0 0.3rem; font-size: 1.15rem; }
+.dim-summary { color: var(--text-dim); font-size: 0.9rem; margin: 0 0 1rem; }
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+.compare-cell {
+  background: #010409;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.7rem 0.8rem;
+}
+.compare-cell h4 {
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+  color: var(--accent);
+}
+.compare-cell p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+.disclaimer {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  border-left: 3px solid var(--border);
+  padding-left: 0.8rem;
+  margin-bottom: 1.5rem;
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>横向对比</h1>
+  <p><a href="index.html">&larr; 返回首页</a></p>
+</header>
+<main>
+  <div class="disclaimer" id="disclaimer"></div>
+  <div id="dimensions"></div>
+</main>
+<script>
+async function main() {
+  const data = await (await fetch('../data/comparison.json')).json();
+  document.getElementById('disclaimer').textContent =
+    `生成于 ${data.generated_at} · ${data.note}`;
+
+  const container = document.getElementById('dimensions');
+  for (const dim of data.dimensions) {
+    const card = document.createElement('div');
+    card.className = 'card dim-card';
+    card.innerHTML = `
+      <h3 class="dim-title">${dim.title}</h3>
+      <p class="dim-summary">${dim.summary}</p>
+      <div class="compare-grid"></div>
+    `;
+    const grid = card.querySelector('.compare-grid');
+    for (const row of dim.rows) {
+      const cell = document.createElement('div');
+      cell.className = 'compare-cell';
+      cell.innerHTML = `<h4>${row.harness}</h4><p>${row.note}</p>`;
+      grid.appendChild(cell);
+    }
+    container.appendChild(card);
+  }
+}
+main();
+</script>
+</body>
+</html>
