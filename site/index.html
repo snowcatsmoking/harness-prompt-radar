@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>harness-prompt-radar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>harness-prompt-radar</h1>
+  <p>持续追踪主流 AI Agent Harness 的 system prompt,记录版本演变。数据项目,不做解读。</p>
+</header>
+<main>
+  <div id="harness-list"></div>
+</main>
+<footer>
+  数据来源见各 harness 详情页。<a href="https://github.com/snowcatsmoking/harness-prompt-radar">GitHub</a>
+</footer>
+<script>
+async function main() {
+  const manifest = await (await fetch('../data/manifest.json')).json();
+  const status = await (await fetch('../data/status.json')).json().catch(() => ({}));
+  const list = document.getElementById('harness-list');
+
+  const maxTokens = Math.max(...manifest.map(m => m.latest_token_count), 1);
+
+  for (const m of manifest) {
+    const st = status[m.harness];
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const badgeClass = m.latest_confidence === 'high' ? 'badge-high' : 'badge-low';
+    const failBadge = st && st.ok === false ? '<span class="badge badge-fail">抓取失败</span>' : '';
+    const pct = Math.round((m.latest_token_count / maxTokens) * 100);
+
+    card.innerHTML = `
+      <div class="harness-row">
+        <div>
+          <div class="harness-name"><a href="detail.html?h=${m.harness}">${m.harness}</a></div>
+          <div class="harness-meta">v${m.latest_version} · ${m.version_count} 个历史版本</div>
+        </div>
+        <div style="text-align:right">
+          <div>${m.latest_token_count.toLocaleString()} tokens</div>
+          <span class="badge ${badgeClass}">${m.latest_confidence === 'high' ? '高置信度' : '低置信度'}</span>
+          ${failBadge}
+        </div>
+      </div>
+      <div class="token-bar-track"><div class="token-bar-fill" style="width:${pct}%"></div></div>
+    `;
+    list.appendChild(card);
+  }
+
+  if (manifest.length === 0) {
+    list.innerHTML = '<p>暂无数据。</p>';
+  }
+}
+main();
+</script>
+</body>
+</html>

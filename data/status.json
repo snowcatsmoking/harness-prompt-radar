@@ -1,0 +1,18 @@
+{
+  "claude-code": {
+    "ok": true,
+    "checked_at": "2026-08-19T06:32:29Z"
+  },
+  "codex-cli": {
+    "ok": true,
+    "checked_at": "2026-08-19T06:32:33Z"
+  },
+  "kimi-code": {
+    "ok": true,
+    "checked_at": "2026-08-19T06:32:34Z"
+  },
+  "opencode": {
+    "ok": true,
+    "checked_at": "2026-08-19T06:32:35Z"
+  }
+}

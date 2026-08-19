@@ -1,0 +1,30 @@
+[
+  {
+    "harness": "claude-code",
+    "version_count": 1,
+    "latest_version": "2.1.235",
+    "latest_token_count": 1219,
+    "latest_confidence": "low"
+  },
+  {
+    "harness": "codex-cli",
+    "version_count": 1,
+    "latest_version": "0.148.0",
+    "latest_token_count": 1448,
+    "latest_confidence": "high"
+  },
+  {
+    "harness": "kimi-code",
+    "version_count": 1,
+    "latest_version": "0.37.2",
+    "latest_token_count": 3796,
+    "latest_confidence": "high"
+  },
+  {
+    "harness": "opencode",
+    "version_count": 1,
+    "latest_version": "1.18.18",
+    "latest_token_count": 1771,
+    "latest_confidence": "high"
+  }
+]

@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>Harness 详情 — harness-prompt-radar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1 id="title">Harness</h1>
+  <p><a href="index.html">&larr; 返回首页</a></p>
+</header>
+<main>
+  <div class="card">
+    <h3 style="margin-top:0">版本历史</h3>
+    <ul class="version-list" id="version-list"></ul>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">版本对比</h3>
+    <div class="diff-controls">
+      <label>从 <select id="from-select"></select></label>
+      <label>到 <select id="to-select"></select></label>
+    </div>
+    <div id="diff-container"></div>
+  </div>
+</main>
+<script src="diff.js"></script>
+<script>
+function harnessFromQuery() {
+  const params = new URLSearchParams(location.search);
+  return params.get('h') || '';
+}
+
+async function main() {
+  const harness = harnessFromQuery();
+  document.getElementById('title').textContent = harness;
+  document.title = harness + ' — harness-prompt-radar';
+
+  const records = await (await fetch(`../data/${harness}.json`)).json();
+  if (!records.length) {
+    document.getElementById('version-list').innerHTML = '<li>暂无数据</li>';
+    return;
+  }
+
+  const versionListEl = document.getElementById('version-list');
+  for (const r of [...records].reverse()) {
+    const li = document.createElement('li');
+    const badgeClass = r.extraction_confidence === 'high' ? 'badge-high' : 'badge-low';
+    li.innerHTML = `
+      <span>v${r.version} <span class="harness-meta">${r.extracted_at}</span></span>
+      <span>${r.system_prompt_token_count.toLocaleString()} tokens
+        <span class="badge ${badgeClass}">${r.extraction_confidence === 'high' ? '高置信度' : '低置信度'}</span>
+      </span>
+    `;
+    versionListEl.appendChild(li);
+  }
+
+  const fromSelect = document.getElementById('from-select');
+  const toSelect = document.getElementById('to-select');
+  for (const r of records) {
+    const optFrom = document.createElement('option');
+    optFrom.value = r.version;
+    optFrom.textContent = 'v' + r.version;
+    fromSelect.appendChild(optFrom);
+
+    const optTo = document.createElement('option');
+    optTo.value = r.version;
+    optTo.textContent = 'v' + r.version;
+    toSelect.appendChild(optTo);
+  }
+  fromSelect.selectedIndex = 0;
+  toSelect.selectedIndex = records.length - 1;
+
+  function renderCurrentDiff() {
+    const fromRecord = records.find(r => r.version === fromSelect.value);
+    const toRecord = records.find(r => r.version === toSelect.value);
+    const container = document.getElementById('diff-container');
+    container.innerHTML = '';
+    if (!fromRecord || !toRecord) return;
+    if (fromRecord.version === toRecord.version) {
+      container.innerHTML = '<p class="harness-meta">选择两个不同版本以查看 diff。</p>';
+      return;
+    }
+    container.appendChild(renderDiff(fromRecord.system_prompt, toRecord.system_prompt));
+  }
+
+  fromSelect.addEventListener('change', renderCurrentDiff);
+  toSelect.addEventListener('change', renderCurrentDiff);
+  renderCurrentDiff();
+}
+main();
+</script>
+</body>
+</html>
