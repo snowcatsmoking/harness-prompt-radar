@@ -1,19 +1,19 @@
 {
   "claude-code": {
     "ok": false,
-    "checked_at": "2026-08-21T03:39:34Z",
+    "checked_at": "2026-08-22T03:31:29Z",
     "error": "security policy anchor (zml) not found"
   },
   "codex-cli": {
     "ok": true,
-    "checked_at": "2026-08-21T03:39:38Z"
+    "checked_at": "2026-08-22T03:31:31Z"
   },
   "kimi-code": {
     "ok": true,
-    "checked_at": "2026-08-21T03:39:39Z"
+    "checked_at": "2026-08-22T03:31:33Z"
   },
   "opencode": {
     "ok": true,
-    "checked_at": "2026-08-21T03:39:41Z"
+    "checked_at": "2026-08-22T03:31:35Z"
   }
 }
