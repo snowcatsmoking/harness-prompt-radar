@@ -8,15 +8,15 @@
   },
   {
     "harness": "codex-cli",
-    "version_count": 3,
-    "latest_version": "0.149.1",
+    "version_count": 4,
+    "latest_version": "0.150.1",
     "latest_token_count": 1448,
     "latest_confidence": "high"
   },
   {
     "harness": "kimi-code",
-    "version_count": 2,
-    "latest_version": "0.38.0",
+    "version_count": 3,
+    "latest_version": "0.39.0",
     "latest_token_count": 3796,
     "latest_confidence": "high"
   },
