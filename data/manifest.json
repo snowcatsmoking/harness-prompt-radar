@@ -15,15 +15,15 @@
   },
   {
     "harness": "kimi-code",
-    "version_count": 3,
-    "latest_version": "0.39.0",
+    "version_count": 4,
+    "latest_version": "0.39.1",
     "latest_token_count": 3796,
     "latest_confidence": "high"
   },
   {
     "harness": "opencode",
-    "version_count": 5,
-    "latest_version": "1.18.23",
+    "version_count": 6,
+    "latest_version": "1.18.25",
     "latest_token_count": 1771,
     "latest_confidence": "high"
   }
