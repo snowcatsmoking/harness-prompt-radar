@@ -8,22 +8,22 @@
   },
   {
     "harness": "codex-cli",
-    "version_count": 7,
-    "latest_version": "0.152.1",
+    "version_count": 8,
+    "latest_version": "0.153.0",
     "latest_token_count": 1448,
     "latest_confidence": "high"
   },
   {
     "harness": "kimi-code",
-    "version_count": 5,
-    "latest_version": "0.40.0",
+    "version_count": 6,
+    "latest_version": "0.40.1",
     "latest_token_count": 3796,
     "latest_confidence": "high"
   },
   {
     "harness": "opencode",
-    "version_count": 7,
-    "latest_version": "1.18.26",
+    "version_count": 8,
+    "latest_version": "1.18.27",
     "latest_token_count": 1771,
     "latest_confidence": "high"
   }
