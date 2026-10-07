@@ -22,8 +22,8 @@
   },
   {
     "harness": "opencode",
-    "version_count": 14,
-    "latest_version": "1.18.34",
+    "version_count": 15,
+    "latest_version": "1.18.35",
     "latest_token_count": 1771,
     "latest_confidence": "high"
   }
