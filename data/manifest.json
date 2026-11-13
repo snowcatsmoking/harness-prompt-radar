@@ -8,8 +8,8 @@
   },
   {
     "harness": "codex-cli",
-    "version_count": 32,
-    "latest_version": "0.167.2",
+    "version_count": 33,
+    "latest_version": "0.169.0",
     "latest_token_count": 1448,
     "latest_confidence": "high"
   },
