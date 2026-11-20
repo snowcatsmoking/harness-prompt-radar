@@ -1,21 +1,21 @@
 {
   "claude-code": {
     "ok": false,
-    "checked_at": "2026-11-19T10:49:25Z",
+    "checked_at": "2026-11-20T10:38:51Z",
     "error": "security policy anchor (zml) not found"
   },
   "codex-cli": {
     "ok": true,
-    "checked_at": "2026-11-19T10:49:28Z"
+    "checked_at": "2026-11-20T10:38:56Z"
   },
   "kimi-code": {
     "ok": false,
-    "checked_at": "2026-11-19T10:49:29Z",
+    "checked_at": "2026-11-20T10:38:57Z",
     "error": "system prompt anchor not found in bundle"
   },
   "opencode": {
     "ok": false,
-    "checked_at": "2026-11-19T10:49:30Z",
+    "checked_at": "2026-11-20T10:38:58Z",
     "error": "HTTP Error 404: Not Found"
   }
 }
